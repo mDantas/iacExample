@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+GIT_BRANCH=$(git branch | grep '*' | awk '{print $2}')
+TF_WORKSPACE=$(terraform workspace show)
+
+if [ "$GIT_BRANCH" != "$TF_WORKSPACE" ]; then
+    echo "Git branch '$GIT_BRANCH' does not match tf workspace '$TF_WORKSPACE'."
+		exit 1
+fi
+
+terraform "$@" -var="environment=$GIT_BRANCH"
